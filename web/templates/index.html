@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+  <title>Hoteles de Ecuador</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Hoteles</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Inicio <span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+      <form method="post" class="form-inline my-2 my-lg-0">
+        {{form.query(class="form-control mr-sm-2",placeholder="Ingrese una provincia...",type="search")}}
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+      </form>
+    </div>
+  </nav>
+  <div class="container">
+    <h1 class="text-center mt-3">Hoteles de Ecuador <span class="glyphicon glyphicon-home"></span></h1>
+    {% if data %}
+    <span class="badge badge-primary ">Número de coincidencias: {{lng}}</span>
+    <div style="margin-top: 1.5em;">
+      <table id="example" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Provincia</th>
+            <th>Ubicación</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for d in data %}
+          <tr>
+            <td>{{d['nombre']}}</td>
+            <td>{{d['provincia']}}</td>
+            <td>{{d['ubicacion']}}</td>
+            <td>{{d['telefono']}}</td>
+            <td>{{d['direccion']}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Nombre</th>
+            <th>Provincia</th>
+            <th>Ubicación</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    {% endif %}
+</body>
+
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#example tfoot th').each(function() {
+      var title = $(this).text();
+      $(this).html('<input type="text" placeholder="Buscar ' + title + '" />');
+    });
+
+    // DataTable
+    var table = $('#example').DataTable();
+
+    // Busqueda
+    table.columns().every(function() {
+      var that = this;
+
+      $('input', this.footer()).on('keyup change', function() {
+        if (that.search() !== this.value) {
+          that
+            .search(this.value)
+            .draw();
+        }
+      });
+    });
+  });
+</script>
+
+</html>
